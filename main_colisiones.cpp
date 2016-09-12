@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctime>
+#include <SDL_mixer.h>
+#include <cstdlib>
 
 using namespace std;
 
@@ -111,6 +113,12 @@ SDL_Rect intento_rect;
 SDL_Rect Xconti_rect;
 SDL_Rect justEnter_rect;
 
+//The music that will be played
+Mix_Music *gMusic = NULL;
+
+//The sound effects that will be used
+Mix_Chunk *gBeep = NULL;
+
 SDL_Event evt_nomb;
 TTF_Font* sans;
 int tam_letra = 50;
@@ -138,6 +146,7 @@ int total_vidas;
 // Manage error messages
 void check_error_sdl(bool check, const char* message);
 void check_error_sdl_img(bool check, const char* message);
+void check_error_sdl_audio(bool check, const char* message);
 
 // Load an image from "fname" and return an SDL_Texture with the content of the image
 SDL_Texture* load_texture(const char* fname, SDL_Renderer *renderer);
@@ -145,10 +154,10 @@ SDL_Texture* cargar_texto(TTF_Font *fuente, const char *texto, SDL_Color color, 
 
 int main(int argc, char** argv) {
     // Initialize SDL
-    check_error_sdl(SDL_Init(SDL_INIT_VIDEO) != 0, "Unable to initialize SDL");
+    check_error_sdl(SDL_Init(SDL_INIT_EVERYTHING) != 0, "Unable to initialize SDL");
 
     // Create and initialize a 800x600 window
-    window = SDL_CreateWindow("Test SDL 2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,800,600, SDL_WINDOW_OPENGL);
+    window = SDL_CreateWindow("Micronoid", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,800,600, SDL_WINDOW_OPENGL);
     check_error_sdl(window == nullptr, "Unable to create window");
 
     // Create and initialize a hardware accelerated renderer that will be refreshed in sync with your monitor (at approx. 60 Hz)
@@ -162,6 +171,20 @@ int main(int argc, char** argv) {
 
     //Inicializa ttf
     TTF_Init();
+
+     //Initialize SDL_mixer
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048)<0){
+            printf("SDL_Mixer error");
+     }
+    gMusic = Mix_LoadMUS("bmbr2battle.wav"); //Puede ser un archivo en formato WAVE, MOD, MIDI, OGG, MP3, FLAC
+    if (gMusic == NULL){
+        printf("No cargo el archivo Musica");
+    }
+    //Load sound effects
+    gBeep = Mix_LoadWAV( "ball_beep_5.wav" );
+    if (gBeep == NULL){
+        printf("No cargo el archivo Sonido");
+    }
 
     // carga de imagenes
     fondo = load_texture("fondo.png", renderer);
@@ -313,7 +336,16 @@ int main(int argc, char** argv) {
     SDL_DestroyTexture(despedida);
     SDL_DestroyTexture(texture_pressX);
 
+    //Free the sound effects
+    Mix_FreeChunk(gBeep);
+    gBeep = NULL;
+
+	//Free the music
+	Mix_FreeMusic(gMusic);
+	gMusic = NULL;
+
     IMG_Quit();
+    Mix_Quit();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
@@ -702,7 +734,7 @@ int checkColisiones(){
     if (dest_bola.y == 13){    //Choque con el techo
         resultado = 4;
     }
-    if (resultado == 1 || resultado == 2){total_vidas++;}
+    if (resultado == 1 || resultado == 2){total_vidas++;Mix_PlayChannel( -1, gBeep, 0 );}
     return resultado;
 }
 
@@ -718,7 +750,15 @@ void GameLoop(){
     comienzo = false;
     start = true;
     while (flag_vidas == false && mainloop && total_vidas !=65){
-            cout << total_vidas <<endl;
+            //cout << total_vidas <<endl;
+        if (Mix_PlayingMusic()==0){
+            Mix_PlayMusic( gMusic, -1 );                //Reproduce la música indefinidamente
+        }
+        else if (Mix_PausedMusic() == 1){
+            Mix_ResumeMusic();
+        }
+
+
         if (chequeo == 3){                  //
             comienzo = false;
         }
@@ -760,6 +800,9 @@ void GameLoop(){
             }
 
         }
+    }
+    if (Mix_PlayingMusic()!=0){
+        Mix_PauseMusic();
     }
     if (flag_vidas){
         while (pantalla_final){            //Hasta que no presione ENTER no pasa a la pantalla final
