@@ -12,7 +12,7 @@
 
 using namespace std;
 
-//declaración de variables
+//declaraciÃ³n de variables
 
 void GameLoop();
 int processInput();
@@ -145,7 +145,7 @@ SDL_Rect pos_info_e1;
 SDL_Rect pos_info_e2;
 SDL_Rect pos_info_out;
 
-Mix_Music *gMusic = NULL;           //Música de fondo
+Mix_Music *gMusic = NULL;           //MÃºsica de fondo
 Mix_Chunk *gBeep = NULL;            //Efecto de sonido usado
 
 SDL_Event evt_nomb;
@@ -163,7 +163,7 @@ char proc[128];
 char porcentaje[6];
 int cicloMov;
 int xMov;               //Posicion de la bola en x
-int yMov;               //Posición de la bola en y
+int yMov;               //PosiciÃ³n de la bola en y
 int xCantMov;           //cuanto se mueve la bola en x
 int yCantMov = 5;       //cuanto se mueve la bola en y
 int bloquesy =163;
@@ -178,7 +178,7 @@ int total_vidas;
 bool reinicio_game = true;
 bool Boton_presionado = false;
 
-//Representación del teclado matricial
+//RepresentaciÃ³n del teclado matricial
 int matriz [4][4] = {{1,2,3,'A'},
                      {4,5,6,'B'},
                      {7,8,9,'C'},
@@ -195,7 +195,7 @@ void check_error_sdl_img(bool check, const char* message);
 SDL_Texture* load_texture(const char* fname, SDL_Renderer *renderer);
 SDL_Texture* cargar_texto(TTF_Font *fuente, const char *texto, SDL_Color color, SDL_Renderer *renderer);
 
-int main(int argc, char** argv) {           //Función principal en donde se realizan todos los procesos
+int main(int argc, char** argv) {           //FunciÃ³n principal en donde se realizan todos los procesos
     // Initialize SDL
     check_error_sdl(SDL_Init(SDL_INIT_EVERYTHING) != 0, "Unable to initialize SDL");
 
@@ -285,10 +285,10 @@ int main(int argc, char** argv) {           //Función principal en donde se real
     text_info_d1 = cargar_texto(sans,"Q:", colour, renderer);
     text_info_d2 = cargar_texto(sans,"salir del juego", colour, renderer);
     text_info_e1 = cargar_texto(sans,"P:", colour, renderer);
-    text_info_e2 = cargar_texto(sans,"pausar/despausar el juego", colour, renderer);
+    text_info_e2 = cargar_texto(sans,"pausar/reanudar el juego", colour, renderer);
     text_info_out = cargar_texto(sans,"Presione ESC para volver", colour, renderer);
 
-    // definiendo tamaño y ubicacion de las texturas
+    // definiendo tamaÃ±o y ubicacion de las texturas
     dest_rect.x = 0;            dest_rect.y = 0;
     dest_rect.w = 800;          dest_rect.h = 600;
     dest_plat.x = 340;          dest_plat.y =503;
@@ -316,7 +316,7 @@ int main(int argc, char** argv) {           //Función principal en donde se real
     name_rect.w = 95;           name_rect.h = 35;
     pressX_rect.x = 240;        pressX_rect.y = 283;             //Destino del mensaje para presione X
     pressX_rect.w = 295;        pressX_rect.h = 35;
-    leaveGame_rect.x = 123;     leaveGame_rect.y = 283;             //Destino del mensaje afirmación
+    leaveGame_rect.x = 123;     leaveGame_rect.y = 283;             //Destino del mensaje afirmaciÃ³n
     leaveGame_rect.w = 553;     leaveGame_rect.h = 35;
     pausa1_rect.x = 316;        pausa1_rect.y = 262;             //Destino del mensaje pausa
     pausa1_rect.w = 167;        pausa1_rect.h = 35;
@@ -360,7 +360,7 @@ int main(int argc, char** argv) {           //Función principal en donde se real
     Xconti_rect.w = 321;        Xconti_rect.h = 35;
     justEnter_rect.x = 297;     justEnter_rect.y = 321;
     justEnter_rect.w = 180;     justEnter_rect.h = 35;
-    processor.x = 520;          processor.y = 560;
+    processor.x = 470;          processor.y = 560;
     processor.h = 25;
     rendimiento.x = 650;        rendimiento.y = 500;
     rendimiento.h = 45;
@@ -435,7 +435,7 @@ int main(int argc, char** argv) {           //Función principal en donde se real
 
     Mix_FreeChunk(gBeep);           //Libera los efectos de sonido
     gBeep = NULL;
-	Mix_FreeMusic(gMusic);          //Libera música
+	Mix_FreeMusic(gMusic);          //Libera mÃºsica
 	gMusic = NULL;
 
     IMG_Quit();
@@ -461,6 +461,7 @@ void Engine(){                      //Motor del juego, se realizan todas las acc
     Pprincipal();                                   //Capturar el nombre
     player_rect.x = 122;   player_rect.y = 545;     //Recoloca el nombre del jugador
     for(int i=0;i<=2;i++){vidas[i]=true;}           //Inicializa variables
+    for(int i=0;i<=64;i++){bloques[i]=true;}        //Inicializa los bloques
     ReiniciarValores();                             //Inicializa valores
     RefreshScreen();
     GameLoop();                                    //se inicia el ciclo del juego
@@ -470,14 +471,13 @@ void Engine(){                      //Motor del juego, se realizan todas las acc
 void ReiniciarValores(){            //Reinicia valores de modo que queden como si se estuviese inciando el juego
     srand(time(NULL));
     cicloMov = NumeroRandom(2,0);
-    for(int i=0;i<=64;i++){bloques[i]=true;}        //Inicializa los bloques
-    xMov = 391; yMov = 488;                         //Inicializa la posición de la bola en 'x' y 'y'
+    xMov = 391; yMov = 488;                         //Inicializa la posiciÃ³n de la bola en 'x' y 'y'
     dest_bola.x=391; dest_bola.y=488;
-    dest_plat.x = 340; dest_plat.y =503;            //Inicializa la posición de la plataforma
+    dest_plat.x = 340; dest_plat.y =503;            //Inicializa la posiciÃ³n de la plataforma
 }
 
-int NumeroRandom(int mayor, int menor){         //Genera el número random
-    return rand() %mayor + menor;       //Crea un número random entre el ranfo de valores dados
+int NumeroRandom(int mayor, int menor){         //Genera el nÃºmero random
+    return rand() %mayor + menor;       //Crea un nÃºmero random entre el ranfo de valores dados
 }
 
 // In case of error, print the error code and close the application
@@ -497,7 +497,7 @@ void check_error_sdl_img(bool check, const char* message) {
     }
 }
 
-SDL_Texture* load_texture(const char* fname, SDL_Renderer *renderer) {  // Cargar las imágenes y el texto
+SDL_Texture* load_texture(const char* fname, SDL_Renderer *renderer) {  // Cargar las imÃ¡genes y el texto
     SDL_Surface *image = IMG_Load(fname);
     check_error_sdl_img(image == nullptr, "Unable to load image");
 
@@ -545,7 +545,7 @@ void RefreshScreen(){           //ciclo de refrezcamiento de la pantalla
 void RefreshBola(){                 //Posiciona la bola y realiza los ciclos de movimiento
     dest_bola.x = xMov; dest_bola.y = yMov;
     chequeo = checkColisiones();
-    if (chequeo == 3){                          //Implica que la bola llegó al piso
+    if (chequeo == 3){                          //Implica que la bola llegÃ³ al piso
         ReiniciarValores();                            //Inicializa variables
     }
     else if (cicloMov == 0){
@@ -665,7 +665,7 @@ void Pprincipal(){                  //Pantalla principal, va tomando el nombre y
                         SDL_RenderCopy(renderer, texture_name_msg,NULL,&name_msg_rect);
                         SDL_RenderCopy(renderer, marcop, NULL, &dest_marcop);
                         SDL_RenderCopy(renderer, text_info, NULL, &pos_info);
-                        nombre[strlen(nombre)-1] = '\0';                                //Borra el elemento último
+                        nombre[strlen(nombre)-1] = '\0';                                //Borra el elemento Ãºltimo
                         if (tam_player >0){tam_player = tam_player -10;}                //Cambia la longitud del texto
                         texture_player = cargar_texto(sans,nombre,colour,renderer);
                         player_rect.x = 455;   player_rect.y = 390;
@@ -743,7 +743,7 @@ void RefreshBloques(){              //Coloca los bloques que se encuentran "acti
     }
 }
 
-int checkColisiones(){              //ciclo de detección de colisiones
+int checkColisiones(){              //ciclo de detecciÃ³n de colisiones
     int resultado=0;
     int centro_bola = xMov +8;
     int bloquesx = 724;
@@ -819,7 +819,7 @@ int checkColisiones(){              //ciclo de detección de colisiones
                 }
             }
         }
-        //comprobación del bloque implicado
+        //comprobaciÃ³n del bloque implicado
         switch(numbloquey){
             case 0:
                 resultado=0;
@@ -876,7 +876,7 @@ void GameLoop(){                    //ciclo principal de juego
     while (flag_vidas == false && mainloop && total_vidas !=65 && Boton_presionado==false){
         Boton_presionado = tecladoMatricial();
         if (Mix_PlayingMusic()==0){
-            Mix_PlayMusic( gMusic, -1 );                //Reproduce la música indefinidamente
+            Mix_PlayMusic( gMusic, -1 );                //Reproduce la mÃºsica indefinidamente
         }
         else if (Mix_PausedMusic() == 1){
             Mix_ResumeMusic();
@@ -961,14 +961,14 @@ void RefreshFrame(){                //Refresca la pantalla
     RefreshVidas();
 }
 
-bool PresionarX(){                  //Lógica para presionar X
+bool PresionarX(){                  //LÃ³gica para presionar X
     SDL_Event teclaX;
     bool salida=false;
     while (SDL_PollEvent(&teclaX)){
         switch (teclaX.type){
             case SDL_KEYDOWN:
             switch (teclaX.key.keysym.sym){
-                case SDLK_e:
+                case SDLK_x:
                 salida = true;
                 break;
             }
@@ -977,7 +977,7 @@ bool PresionarX(){                  //Lógica para presionar X
     return salida;
 }
 
-bool PresionarENTER(){              //Lógica para presionar ENTER
+bool PresionarENTER(){              //LÃ³gica para presionar ENTER
     SDL_Event teclaENTER;
     bool salida=true;
     while (SDL_PollEvent(&teclaENTER)){
@@ -993,7 +993,7 @@ bool PresionarENTER(){              //Lógica para presionar ENTER
     return salida;
 }
 
-int Pausa(){                        //Lógica para presionar P y se dé la pausa o se quite
+int Pausa(){                        //LÃ³gica para presionar P y se dÃ© la pausa o se quite
     state = 1;
     SDL_Event pause;
     while (SDL_PollEvent(&pause)){
@@ -1009,7 +1009,7 @@ int Pausa(){                        //Lógica para presionar P y se dé la pausa o
     return state;
 }
 
-int Salida(){                       //Lógica para que al presionar Q se dé la desición de salir o no
+int Salida(){                       //LÃ³gica para que al presionar Q se dÃ© la desiciÃ³n de salir o no
     state = 2;
     SDL_Event out;
     while (SDL_PollEvent(&out)){
@@ -1028,7 +1028,7 @@ int Salida(){                       //Lógica para que al presionar Q se dé la de
     return state;
 }
 
-int processInput(){                 //En el juego principal es la que indica si hay una acción en el teclado y si es de las establecidas
+int processInput(){                 //En el juego principal es la que indica si hay una acciÃ³n en el teclado y si es de las establecidas
     state = 1;
     SDL_Event evento;
     SDL_StartTextInput();
@@ -1067,11 +1067,11 @@ void PantallaFinal(){               //Muestra los datos especificados en la pant
     procesador();
     performance();
     tam_processor = strlen(proc) *11;
-    tam_rendimiento = strlen(porcentaje) *22;
+    tam_rendimiento = 4 *22;
     processor.w = tam_processor;
     rendimiento.w = tam_rendimiento;
     texture_procesador = cargar_texto(sans,proc,colour,renderer);
-    texture_rendimiento = cargar_texto(sans,porcentaje,colour,renderer);
+    //texture_rendimiento = cargar_texto(sans,porcentaje,colour,renderer);
     //Imprime los mensajes finales
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, fondo, NULL, &dest_rect);
@@ -1100,7 +1100,7 @@ void PantallaFinal(){               //Muestra los datos especificados en la pant
     }
 }
 
-bool tecladoMatricial(){            //Lógica para el teclado matricial
+bool tecladoMatricial(){            //LÃ³gica para el teclado matricial
     bool pressed_button = false;
     for (int j=0; j<4; j++){
     pinMode (columna[j], OUTPUT);
@@ -1132,11 +1132,13 @@ void procesador(){                  //Determina el procesador
     fgets(proc, 128, file);
     fgets(proc, 14, file);
     fgets(proc, 128, file);
+    proc[strlen(proc)-1] = '\0';
     fclose(file);
 }
 
 void performance(){                 //Determina el rendimiento
     FILE* archivo;
+    char porcentaje[6];
     float percent;
     archivo = fopen("/proc/loadavg", "r");
     fgets(porcentaje, 4, archivo);
@@ -1144,6 +1146,8 @@ void performance(){                 //Determina el rendimiento
     percent=std::stof(fs);
     percent=percent*100;
     snprintf(porcentaje,6,"%f",percent);
+    strcat(porcentaje,"%");
+    texture_rendimiento = cargar_texto(sans,porcentaje,colour,renderer);
     fclose(archivo);
 }
 
@@ -1177,3 +1181,4 @@ void instrucciones(){
         }
     }
 }
+
